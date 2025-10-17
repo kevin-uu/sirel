@@ -4,10 +4,11 @@
 
 //http://localhost/sirem_api/index.php?endpoint=usuarios
 // src/api/usuarios.js
+// 📁 src/api/usuarios.js
 const API_URL = "http://localhost/sirem_api/index.php";
 
 /**
- * 🧩 Obtener lista de usuarios
+ * 🔹 Obtener lista de usuarios activos
  */
 export async function obtenerUsuarios() {
     try {
@@ -17,10 +18,10 @@ export async function obtenerUsuarios() {
         console.error("Error al obtener usuarios:", error);
         return { success: 0, message: "Error de conexión" };
     }
-    }
+}
 
-    /**
- * 🔄 Obtener lista de usuarios inactivos
+/**
+ * 🔹 Obtener lista de usuarios inactivos
  */
 export async function obtenerUsuariosInactivos() {
     try {
@@ -33,58 +34,9 @@ export async function obtenerUsuariosInactivos() {
 }
 
 /**
- * 🔸 Inactivar usuario (no lo elimina)
+ * ➕ Agregar nuevo usuario
  */
-export async function eliminarUsuario(id, usuarioActual) {
-    try {
-        const token = btoa(JSON.stringify({
-            id: usuarioActual.id,
-            rol_id: usuarioActual.rol_id
-        }));
-
-        const res = await fetch(`${API_URL}?endpoint=usuarios`, {
-            method: "DELETE",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: token,
-            },
-            body: JSON.stringify({ id }),
-        });
-
-        return await res.json();
-    } catch (error) {
-        console.error("Error al inactivar usuario:", error);
-        return { success: 0, message: "Error de conexión" };
-    }
-}
-
-/**
- * ♻️ Reactivar usuario
- */
-/**
- * ♻️ Reactivar usuario inactivo
- */
-export async function reactivarUsuario(id) {
-    try {
-        const res = await fetch(`http://localhost/sirem_api/index.php?endpoint=usuarios`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id }),
-        });
-
-        return await res.json();
-    } catch (error) {
-        console.error("Error al reactivar usuario:", error);
-        return { success: 0, message: "Error de conexión" };
-    }
-}
-
-
-
-    /**
-     * ➕ Registrar nuevo usuario
-     */
-    export async function agregarUsuario(usuario) {
+export async function agregarUsuario(usuario) {
     try {
         const res = await fetch(`${API_URL}?endpoint=usuarios`, {
         method: "POST",
@@ -115,9 +67,47 @@ export async function reactivarUsuario(id) {
     }
     }
 
+    /**
+     * ❌ Inactivar (desactivar) usuario
+     */
+    export async function eliminarUsuario(id, usuarioActual) {
+    try {
+        const token = btoa(
+        JSON.stringify({
+            id: usuarioActual.id,
+            rol_id: usuarioActual.rol_id,
+        })
+        );
 
+        const res = await fetch(`${API_URL}?endpoint=usuarios`, {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: token,
+        },
+        body: JSON.stringify({ id }),
+        });
 
+        return await res.json();
+    } catch (error) {
+        console.error("Error al inactivar usuario:", error);
+        return { success: 0, message: "Error de conexión" };
+    }
+    }
 
-
-
-
+    /**
+     * ♻️ Reactivar usuario inactivo
+     */
+    export async function reactivarUsuario(id) {
+    try {
+        const res = await fetch(`${API_URL}?endpoint=usuarios&accion=reactivar`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ id }),
+        });
+        return await res.json();
+    } catch (error) {
+        console.error("Error al reactivar usuario:", error);
+        return { success: 0, message: "Error de conexión" };
+    }
+}
