@@ -20,10 +20,6 @@ import {
     const [usuarioEditando, setUsuarioEditando] = useState(null);
     const [busqueda, setBusqueda] = useState("");
 
-    useEffect(() => {
-        cargarUsuarios();
-    }, [cargarUsuarios]);
-
     const cargarUsuarios = useCallback (async () => {
         if (mostrarInactivos) {
         const res = await obtenerUsuariosInactivos();
@@ -33,6 +29,10 @@ import {
         if (res.success) setUsuarios(res.usuarios);
         }
     },[mostrarInactivos] );
+
+    useEffect(() => {
+        cargarUsuarios();
+    }, [cargarUsuarios]);
 
     const handleNuevo = () => {
         setUsuarioEditando(null);
