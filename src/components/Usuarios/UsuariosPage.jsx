@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import UsuariosTable from "./UsuariosTable";
 import UsuarioModal from "./UsuarioModal";
 import {
@@ -22,9 +22,9 @@ import {
 
     useEffect(() => {
         cargarUsuarios();
-    }, []);
+    }, [cargarUsuarios]);
 
-    const cargarUsuarios = async () => {
+    const cargarUsuarios = useCallback (async () => {
         if (mostrarInactivos) {
         const res = await obtenerUsuariosInactivos();
         if (res.success) setInactivos(res.usuarios);
@@ -32,7 +32,7 @@ import {
         const res = await obtenerUsuarios();
         if (res.success) setUsuarios(res.usuarios);
         }
-    };
+    },[mostrarInactivos] );
 
     const handleNuevo = () => {
         setUsuarioEditando(null);
@@ -64,9 +64,6 @@ import {
         }
     }
 };
-
-
-    
 
     const handleReactivar = async (id) => {
         if (window.confirm("¿Deseas reactivar este usuario?")) {
