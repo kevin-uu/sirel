@@ -4,6 +4,7 @@ import StatsCards from "../components/Dashboard/StatsCards"; // ← CORREGIDO
 import RecentActivity from "../components/Dashboard/RecentActivity"; // ← CORREGIDO
 import BarChart from "../components/Dashboard/Charts/BarChart"; // ← CORREGIDO
 import PieChart from "../components/Dashboard/Charts/PieChart"; // ← CORREGIDO
+import { sirelTheme } from "../theme/sirelTheme";
 
 /**
  * Página principal del Dashboard con resumen del sistema
@@ -67,10 +68,14 @@ export default function Dashboard() {
      */
     if (cargando) {
         return (
-        <div className="min-h-screen flex items-center justify-center">
+        <div className="min-h-screen flex items-center justify-center" 
+        style={{backgroundColor: sirelTheme.colors.light}}>
             <div className="text-center">
-            <div className="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-            <p className="text-gray-600">Cargando dashboard...</p>
+                <div className="w-16 h-16 border-4 rounded-full animate-spin mx-auto mb-4"
+                style={{borderColor:sirelTheme.colors.primary, borderTopColor: "transparent",}}>
+
+                </div>
+                <p className="text-gray-700">Cargando dashboard...</p>
             </div>
         </div>
         );
@@ -81,82 +86,112 @@ export default function Dashboard() {
      */
     if (error) {
         return (
-        <div className="min-h-screen flex items-center justify-center">
+        <div className="min-h-screen flex items-center justify-center"  style={{ backgroundColor: sirelTheme.colors.light }}>
             <div className="text-center">
-            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl">⚠️</span>
-            </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Error al cargar</h3>
-            <p className="text-gray-600 mb-4">{error}</p>
-            <button 
-                onClick={cargarDashboard}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition-colors duration-200"
-            >
-                Reintentar
-            </button>
+                <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span className="text-2xl">⚠️</span>
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">Error al cargar</h3>
+                <p className="text-gray-600 mb-4">{error}</p>
+                <button 
+                    onClick={cargarDashboard}
+                    style={{
+                    backgroundColor: sirelTheme.buttons.primary.background,
+                    color: sirelTheme.buttons.primary.text,
+                    }}
+                    className="px-6 py-2 rounded-lg shadow hover:opacity-90 transition"
+                >
+                    Reintentar
+                </button>
             </div>
         </div>
         );
     }
 
     return (
+        <div
+        className="min-h-screen p-6"
+        style={{ backgroundColor: sirelTheme.colors.light }}
+        >
+        {/* ===== CONTENIDO PRINCIPAL ===== */}
         <div className="max-w-7xl mx-auto space-y-6">
-        {/* Encabezado del Dashboard */}
-        <div className="mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            Bienvenido al Dashboard
+            {/* 🏷️ Título del Dashboard */}
+            <div className="mb-8">
+            <h1
+                className="text-3xl font-bold mb-2"
+                style={{ color: sirelTheme.colors.primary }}
+            >
+                Bienvenido al Panel SIREL
             </h1>
             <p className="text-gray-600">
-            Resumen general y métricas del sistema SIREL
+                Monitorea métricas clave, usuarios y operaciones del sistema.
             </p>
-        </div>
+            </div>
 
-        {/* Tarjetas de Estadísticas */}
-        <StatsCards estadisticas={estadisticas} />
+            {/* 📊 Tarjetas de estadísticas */}
+            <StatsCards estadisticas={estadisticas} />
 
-        {/* Grid de Gráficos y Actividad */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Gráfico de Barras - Ocupa 2 columnas en desktop */}
+            {/* 🧭 Gráficos + Actividad */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Gráfico de Barras */}
             <div className="lg:col-span-2">
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+                <div className="bg-white rounded-2xl shadow border border-gray-200 p-6">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                Transacciones Mensuales
+                    Transacciones Mensuales
                 </h3>
                 <div className="h-80">
-                <BarChart datos={datosGraficos?.transaccionesMensuales} />
+                    <BarChart datos={datosGraficos?.transaccionesMensuales} />
+                </div>
                 </div>
             </div>
-            </div>
 
-            {/* Gráfico Circular y Actividad Reciente - Ocupa 1 columna */}
+            {/* Gráfico Circular + Actividad Reciente */}
             <div className="space-y-6">
-            {/* Gráfico Circular */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+                <div className="bg-white rounded-2xl shadow border border-gray-200 p-6">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                Usuarios por Rol
+                    Usuarios por Rol
                 </h3>
                 <div className="h-64">
-                <PieChart datos={datosGraficos?.usuariosPorRol} />
+                    <PieChart datos={datosGraficos?.usuariosPorRol} />
                 </div>
+                </div>
+
+                <RecentActivity actividad={actividad} />
+            </div>
             </div>
 
-            {/* Actividad Reciente */}
-            <RecentActivity actividad={actividad} />
-            </div>
-        </div>
-
-        {/* Botón de actualizar */}
-        <div className="flex justify-center pt-6">
-            <button 
-            onClick={cargarDashboard}
-            className="flex items-center space-x-2 bg-white border border-gray-300 hover:border-gray-400 text-gray-700 px-4 py-2 rounded-lg transition-all duration-200 hover:shadow-sm"
+            {/* 🔁 Botón de recarga */}
+            <div className="flex justify-center pt-6">
+            <button
+                onClick={cargarDashboard}
+                className="flex items-center space-x-2 border border-gray-300 px-4 py-2 rounded-lg hover:shadow-sm transition-all"
+                style={{
+                backgroundColor: sirelTheme.colors.white,
+                color: sirelTheme.colors.dark,
+                }}
             >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-            </svg>
-            <span>Actualizar Datos</span>
+                <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                >
+                <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                />
+                </svg>
+                <span>Actualizar Datos</span>
             </button>
+            </div>
         </div>
+
+        {/* ===== FOOTER ===== */}
+        <footer className="text-center mt-10 text-gray-600 text-sm">
+            © {new Date().getFullYear()} SIREL — Sistema de Remesas
+        </footer>
         </div>
     );
 }

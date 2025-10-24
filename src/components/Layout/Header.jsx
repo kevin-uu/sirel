@@ -1,4 +1,5 @@
 import React from "react";
+import { sirelTheme } from "../../theme/sirelTheme";
 
 /**
  * Header de la aplicación con menú de usuario y notificaciones.
@@ -24,13 +25,19 @@ export default function Header({ usuario, onCerrarSesion, onToggleSidebar }) {
     };
 
     return (
-        <header className="bg-white shadow-sm border-b border-gray-200 z-10">
+        <header
+        className="shadow-sm border-b z-10"
+        style={{
+            background: sirelTheme.layout.header.background,
+            color: sirelTheme.layout.header.text,
+        }}
+        >
         <div className="flex items-center justify-between px-6 py-4">
             {/* ===== Botón menú móvil y título ===== */}
             <div className="flex items-center space-x-4">
             <button
                 onClick={onToggleSidebar}
-                className="lg:hidden p-2 rounded-lg text-gray-600 hover:bg-gray-100 transition-colors duration-200"
+                className="lg:hidden p-2 rounded-lg text-white hover:bg-white/10 transition"
             >
                 <svg
                 className="w-6 h-6"
@@ -47,108 +54,80 @@ export default function Header({ usuario, onCerrarSesion, onToggleSidebar }) {
                 </svg>
             </button>
 
-            {/* Título principal del dashboard */}
-            <div>
-                <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-                <p className="text-gray-600 text-sm">
-                Resumen general del sistema
-                </p>
+            {/* Logo + título */}
+            <div className="flex items-center gap-3">
+                <img src="/sirel_logo.jpeg" alt="SIREL" className="h-8 w-8 rounded-md" />
+                <div>
+                <h1 className="text-xl font-semibold tracking-wide">Dashboard</h1>
+                <p className="text-sm opacity-80">Resumen general del sistema</p>
+                </div>
             </div>
             </div>
 
-            {/* ===== Menú de usuario y notificaciones ===== */}
-            <div className="flex items-center space-x-4">
-            {/* 🔔 Botón de notificaciones */}
-            <button className="relative p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors duration-200">
+            {/* ===== Usuario ===== */}
+            <div className="flex items-center gap-4 relative">
+            <button
+                onClick={() => setUserMenuOpen(!userMenuOpen)}
+                className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/10 transition"
+            >
+                <div
+                className="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-bold"
+                style={{ backgroundColor: sirelTheme.colors.secondary }}
+                >
+                {usuario?.nombre?.charAt(0)?.toUpperCase() || "U"}
+                </div>
+                <div className="hidden md:block text-left">
+                <p className="text-sm font-medium">{usuario?.nombre || "Usuario"}</p>
+                <p className="text-xs opacity-80">{obtenerRolNombre(usuario?.rol_id)}</p>
+                </div>
                 <svg
-                className="w-6 h-6"
+                className="w-4 h-4 opacity-80"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
                 >
-                <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M15 17h5l-5 5v-5zM10.5 3.75a6 6 0 0 1 11.5 2.25v4.5a6 6 0 0 1-6 6h-1.5v2.25L9 15H7.5a6 6 0 0 1-6-6v-4.5a6 6 0 0 1 6-6h3z"
-                />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>
-                <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
-                3
-                </span>
             </button>
 
-            {/* 👤 Menú de usuario */}
-            <div className="relative">
-                <button
-                onClick={() => setUserMenuOpen(!userMenuOpen)}
-                className="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100 transition-colors duration-200"
-                >
-                {/* Inicial del usuario */}
-                <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full flex items-center justify-center text-white text-sm font-bold">
-                    {usuario?.nombre?.charAt(0)?.toUpperCase() || "U"}
+            {/* Dropdown */}
+            {userMenuOpen && (
+                <div
+                        className="absolute right-0 top-full mt-2 w-52 bg-white rounded-xl shadow-lg border border-gray-200 py-2 z-[9999] text-gray-800"
+                        style={{ position: "absolute" }}
+                        >
+                        <a
+                            href="#perfil"
+                            className="flex items-center space-x-3 px-4 py-2 text-sm hover:bg-[#e0f2f1] hover:text-[#0b6c50] transition-colors duration-200"
+                            >
+                            <span>👤</span>
+                            <span>Mi Perfil</span>
+                        </a>
+
+                        <a
+                            href="#configuracion"
+                            className="flex items-center space-x-3 px-4 py-2 text-sm hover:bg-[#e0f2f1] hover:text-[#0b6c50] transition-colors duration-200"
+                        >
+                            <span>⚙️</span>
+                            <span>Configuración</span>
+                        </a>
+
+                        <div className="border-t border-gray-200 my-1"></div>
+
+                        <button
+                            onClick={onCerrarSesion}
+                            className="flex items-center space-x-3 w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50 hover:text-red-700 transition-colors duration-200"
+                        >
+                            <span>🚪</span>
+                            <span>Cerrar Sesión</span>
+                        </button>
+                        </div>
+
+                    )}
                 </div>
-
-                {/* Nombre y rol */}
-                <div className="text-left hidden md:block">
-                    <p className="text-sm font-medium text-gray-900">
-                    {usuario?.nombre || "Usuario"}
-                    </p>
-                    <p className="text-xs text-gray-600">
-                    {obtenerRolNombre(usuario?.rol_id)}
-                    </p>
-                </div>
-
-                {/* Flecha del dropdown */}
-                <svg
-                    className="w-4 h-4 text-gray-600"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                >
-                    <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M19 9l-7 7-7-7"
-                    />
-                </svg>
-                </button>
-
-                {/* ===== Dropdown menu ===== */}
-                {userMenuOpen && (
-                <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-200 py-2 z-50">
-                    <a
-                    href="#perfil"
-                    className="flex items-center space-x-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
-                    >
-                    <span>👤</span>
-                    <span>Mi Perfil</span>
-                    </a>
-                    <a
-                    href="#configuracion"
-                    className="flex items-center space-x-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
-                    >
-                    <span>⚙️</span>
-                    <span>Configuración</span>
-                    </a>
-
-                    <div className="border-t border-gray-200 my-1"></div>
-
-                    {/* 🔴 Botón de cierre de sesión */}
-                    <button
-                    onClick={onCerrarSesion}
-                    className="flex items-center space-x-3 w-full px-4 py-2 text-sm text-red-600 hover:bg-gray-50"
-                    >
-                    <span>🚪</span>
-                    <span>Cerrar Sesión</span>
-                    </button>
-                </div>
-                )}
             </div>
-            </div>
-        </div>
         </header>
     );
 }
+
 
